@@ -12,13 +12,13 @@
 #define PIXEL_TYPE WS2812B
 #define HUE_STEP 10 // 1..255, each loop increments hue by this value
 #define LOOP_DELAY 100 //ms
-#define HSV_BRIGHTNESS 60 //0-255
+#define HSV_BRIGHTNESS 60 //0-255 (FYI this tends to be a bit lower than BASE_BRIGHTNESS)
 #define HSV_SATURATION 255
 #define BASE_BRIGHTNESS 40 //0-255
 /* set this to match the number of patterns you flip
 between when holding the setup button */
-#define N_PATTERNS 4
-#define SETUP_BUTTON_HOLD_DURATION 500
+#define N_PATTERNS 5
+#define SETUP_BUTTON_HOLD_DURATION 800 // ms
 
 // PORNJ!!!! These values are selected to look decent on RBG LEDs
 #define DISORIENT_PINK_R 252
@@ -30,7 +30,7 @@ between when holding the setup button */
 
 // disorient_1 pattern params
 #define DISORIENT_1_ILLUMINATION_PROBABILITY 60
-#define DISORIENT_1_SPARKLE_PROBABILITY 10 // 90% is pink/orange split
+#define DISORIENT_1_SPARKLE_PROBABILITY 5
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(PIXEL_COUNT, PIXEL_PIN, PIXEL_TYPE);
 uint8_t base_hue = 0;
@@ -44,7 +44,7 @@ void setup() {
 }
 
 // pattern 0
-void pattern_disorient_half_circle_rotate(Adafruit_NeoPixel *strip){
+void pattern_disorient_0(Adafruit_NeoPixel *strip){
   long t = millis()*0.25;
   uint8_t offset = t % PIXEL_COUNT;
   uint8_t new_i = 0;
@@ -65,32 +65,6 @@ void pattern_disorient_half_circle_rotate(Adafruit_NeoPixel *strip){
 }
 
 // pattern 1
-void pattern_hsv_offset_circle_loop(Adafruit_NeoPixel *strip){
-  uint8_t offset = 0;
-  RgbColor rgb;
-  HsvColor hsv;
-  for (int i = 0 ; i < PIXEL_COUNT ; ++i){
-    offset = ((float)i/(PIXEL_COUNT-1))*255;
-    hsv = HsvColor(base_hue+offset, HSV_SATURATION, HSV_BRIGHTNESS);
-    rgb = HsvToRgb(hsv);
-    (*strip).setPixelColor(i, rgb.r, rgb.g, rgb.b);
-  }
-  base_hue += HUE_STEP;
-  (*strip).show();
-}
-
-// pattern 2
-void pattern_hsv_circle_loop(Adafruit_NeoPixel *strip){
-  HsvColor hsv(base_hue, HSV_SATURATION, HSV_BRIGHTNESS);
-  RgbColor rgb = HsvToRgb(hsv);
-  for (int i = 0 ; i < PIXEL_COUNT ; ++i){
-    (*strip).setPixelColor(i, rgb.r, rgb.g, rgb.b);
-  }
-  base_hue += HUE_STEP;
-  (*strip).show();
-}
-
-// pattern 3
 void pattern_disorient_1(Adafruit_NeoPixel *strip){
   // illumination probability
   // -> random sparkle probability (white)
@@ -116,7 +90,58 @@ void pattern_disorient_1(Adafruit_NeoPixel *strip){
   (*strip).show();
 }
 
+// pattern 2
+void pattern_hsv_offset_circle_loop(Adafruit_NeoPixel *strip){
+  uint8_t offset = 0;
+  RgbColor rgb;
+  HsvColor hsv;
+  for (int i = 0 ; i < PIXEL_COUNT ; ++i){
+    offset = ((float)i/(PIXEL_COUNT-1))*255;
+    hsv = HsvColor(base_hue+offset, HSV_SATURATION, HSV_BRIGHTNESS);
+    rgb = HsvToRgb(hsv);
+    (*strip).setPixelColor(i, rgb.r, rgb.g, rgb.b);
+  }
+  base_hue += HUE_STEP;
+  (*strip).show();
+}
 
+// pattern 3
+void pattern_hsv_circle_loop(Adafruit_NeoPixel *strip){
+  HsvColor hsv(base_hue, HSV_SATURATION, HSV_BRIGHTNESS);
+  RgbColor rgb = HsvToRgb(hsv);
+  for (int i = 0 ; i < PIXEL_COUNT ; ++i){
+    (*strip).setPixelColor(i, rgb.r, rgb.g, rgb.b);
+  }
+  base_hue += HUE_STEP;
+  (*strip).show();
+}
+
+// pattern 4
+void pattern_disorient_2(Adafruit_NeoPixel *strip){
+  // same as pattern 0, but in quadrants
+  uint8_t offset_0, offset_1, offset_2, offset_3, offset_4;
+  offset_0 = 0;
+  offset_1 = PIXEL_COUNT/4;
+  offset_2 = PIXEL_COUNT/2;
+  offset_3 = offset_1+offset_2;
+  long t = millis()*0.25;
+  uint8_t offset = t % PIXEL_COUNT;
+  uint8_t new_i = 0;
+  for (int i = 0 ; i < PIXEL_COUNT ; ++i){
+    new_i = (i + offset) % PIXEL_COUNT;
+    if (i >= offset_0 && i < offset_1 || i >= offset_2 && i < offset_3) {
+      (*strip).setPixelColor(new_i, DISORIENT_PINK_R, DISORIENT_PINK_G, DISORIENT_PINK_B);
+    } else {
+      (*strip).setPixelColor(new_i, DISORIENT_ORANGE_R, DISORIENT_ORANGE_G, DISORIENT_ORANGE_B);
+    }
+    if (random(100) <= 5) {
+      // random sparkles
+      (*strip).setPixelColor(new_i, 255, 255, 255);
+    }
+  }
+  (*strip).setBrightness(BASE_BRIGHTNESS);
+  (*strip).show();
+}
 
 // loop() runs over and over again, as quickly as it can execute.
 void loop() {
@@ -127,13 +152,15 @@ void loop() {
     }
   }
   if (pattern == 0){
-    pattern_disorient_half_circle_rotate(&strip);
+    pattern_disorient_0(&strip);
   } else if (pattern == 1) {
-    pattern_hsv_offset_circle_loop(&strip);
+    pattern_disorient_0(&strip);
   } else if (pattern == 2) {
-    pattern_hsv_circle_loop(&strip);
+    pattern_hsv_offset_circle_loop(&strip);
   } else if (pattern == 3) {
-    pattern_disorient_1(&strip);
+    pattern_hsv_circle_loop(&strip);
+  } else if (pattern == 4) {
+    pattern_disorient_2(&strip);
   }
 
   delay(LOOP_DELAY);
