@@ -35,6 +35,9 @@ between when holding the setup button */
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(PIXEL_COUNT, PIXEL_PIN, PIXEL_TYPE);
 uint8_t base_hue = 0;
 uint8_t pattern = 0;
+// this is ghetto debouncing, and will ignore input to the pattern button
+// for X cycles of LOOP_DELAY once triggered
+uint8_t ignore_button_cycles = 0;
 
 // setup() runs once, when the device is first turned on.
 void setup() {
@@ -146,15 +149,21 @@ void pattern_disorient_2(Adafruit_NeoPixel *strip){
 // loop() runs over and over again, as quickly as it can execute.
 void loop() {
   if (HAL_Core_Mode_Button_Pressed(SETUP_BUTTON_HOLD_DURATION)) {
-    ++pattern;
-    if (pattern >= N_PATTERNS) {
-      pattern = 0;
+    if (ignore_button_cycles > 0) {
+      --ignore_button_cycles;
+    } else {
+      ignore_button_cycles = 10;
+      ++pattern;
+      if (pattern >= N_PATTERNS) {
+        pattern = 0;
+      }
     }
   }
+
   if (pattern == 0){
     pattern_disorient_0(&strip);
   } else if (pattern == 1) {
-    pattern_disorient_0(&strip);
+    pattern_disorient_1(&strip);
   } else if (pattern == 2) {
     pattern_hsv_offset_circle_loop(&strip);
   } else if (pattern == 3) {
