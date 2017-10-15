@@ -12,11 +12,13 @@
 #define PIXEL_TYPE WS2812B
 #define HUE_STEP 10 // 1..255, each loop increments hue by this value
 #define LOOP_DELAY 100 //ms
+#define BASE_BRIGHTNESS 40 //0-255
+#define BASE_SATURATION 255
+#define N_PATTERNS 2
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(PIXEL_COUNT, PIXEL_PIN, PIXEL_TYPE);
 uint8_t base_hue = 0;
-uint8_t base_brightness = 100; //0-255
-uint8_t base_saturation = 255;
+uint8_t pattern = 0;
 
 // setup() runs once, when the device is first turned on.
 void setup() {
@@ -25,7 +27,7 @@ void setup() {
 }
 
 void pattern_hsv_circle_loop(Adafruit_NeoPixel *strip){
-  HsvColor hsv(base_hue, base_saturation, base_brightness);
+  HsvColor hsv(base_hue, BASE_SATURATION, BASE_BRIGHTNESS);
   RgbColor rgb = HsvToRgb(hsv);
   for (int i = 0 ; i < PIXEL_COUNT ; ++i){
     (*strip).setPixelColor(i, rgb.r, rgb.g, rgb.b);
@@ -39,7 +41,7 @@ void pattern_hsv_offset_circle_loop(Adafruit_NeoPixel *strip){
   HsvColor hsv;
   for (int i = 0 ; i < PIXEL_COUNT ; ++i){
     offset = ((float)i/(PIXEL_COUNT-1))*255;
-    hsv = HsvColor(base_hue+offset, base_saturation, base_brightness);
+    hsv = HsvColor(base_hue+offset, BASE_SATURATION, BASE_BRIGHTNESS);
     rgb = HsvToRgb(hsv);
     (*strip).setPixelColor(i, rgb.r, rgb.g, rgb.b);
   }
@@ -48,7 +50,17 @@ void pattern_hsv_offset_circle_loop(Adafruit_NeoPixel *strip){
 
 // loop() runs over and over again, as quickly as it can execute.
 void loop() {
-  pattern_hsv_offset_circle_loop(&strip);
+  if (HAL_Core_Mode_Button_Pressed(1000)) {
+    ++pattern;
+    if (pattern >= N_PATTERNS) {
+      pattern = 0;
+    }
+  }
+  if (pattern == 0){
+    pattern_hsv_offset_circle_loop(&strip);
+  } else if (pattern == 1) {
+    pattern_hsv_circle_loop(&strip);
+  }
   strip.show();
   delay(LOOP_DELAY);
 }
