@@ -15,10 +15,12 @@
 #define HSV_BRIGHTNESS 60 //0-255
 #define HSV_SATURATION 255
 #define BASE_BRIGHTNESS 40 //0-255
+/* set this to match the number of patterns you flip
+between when holding the setup button */
 #define N_PATTERNS 4
 #define SETUP_BUTTON_HOLD_DURATION 500
 
-// PORNJ!!!!
+// PORNJ!!!! These values are selected to look decent on RBG LEDs
 #define DISORIENT_PINK_R 252
 #define DISORIENT_PINK_G 0
 #define DISORIENT_PINK_B 210
