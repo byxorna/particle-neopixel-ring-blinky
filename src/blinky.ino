@@ -47,6 +47,9 @@ void setup() {
   randomSeed(analogRead(0));
   strip.begin();
   strip.show();
+
+  RGB.control(true); // take over the LED
+  RGB.color(DISORIENT_PINK_R, DISORIENT_PINK_G, DISORIENT_PINK_B);
 }
 
 // pattern 0
@@ -151,16 +154,22 @@ void pattern_disorient_2(Adafruit_NeoPixel *strip){
 
 // loop() runs over and over again, as quickly as it can execute.
 void loop() {
+
   if (HAL_Core_Mode_Button_Pressed(SETUP_BUTTON_HOLD_DURATION)) {
     if (ignore_button_cycles > 0) {
       --ignore_button_cycles;
+      RGB.color(0, 255, 0); // green when ignoring press
     } else {
+      RGB.color(255, 0, 0); // red on pattern change
       ignore_button_cycles = 10;
       ++pattern;
       if (pattern >= N_PATTERNS) {
         pattern = 0;
       }
     }
+  } else {
+    ignore_button_cycles = 0;
+    RGB.color(DISORIENT_PINK_R, DISORIENT_PINK_G, DISORIENT_PINK_B);
   }
 
   if (pattern == 0){
