@@ -110,6 +110,12 @@ void pattern_hsv_offset_circle_loop(Adafruit_NeoPixel *strip){
     rgb = HsvToRgb(hsv);
     (*strip).setPixelColor(i, rgb.r, rgb.g, rgb.b);
   }
+
+  // set the center pixel to mirror what pixel 0 is
+  hsv = HsvColor(base_hue+offset, HSV_SATURATION, HSV_BRIGHTNESS);
+  rgb = HsvToRgb(hsv);
+  RGB.color(rgb.r, rgb.g, rgb.b);
+
   base_hue += HUE_STEP;
   (*strip).show();
 }
@@ -121,6 +127,9 @@ void pattern_hsv_circle_loop(Adafruit_NeoPixel *strip){
   for (int i = 0 ; i < PIXEL_COUNT ; ++i){
     (*strip).setPixelColor(i, rgb.r, rgb.g, rgb.b);
   }
+  // set the center pixel to mirror what pixel 0 is
+  RGB.color(rgb.r, rgb.g, rgb.b);
+
   base_hue += HUE_STEP;
   (*strip).show();
 }
