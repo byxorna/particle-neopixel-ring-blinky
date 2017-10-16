@@ -39,6 +39,9 @@ uint8_t pattern = 0;
 // for X cycles of LOOP_DELAY once triggered
 uint8_t ignore_button_cycles = 0;
 
+// make sure we disable wifi cause we dont need that shit!
+SYSTEM_MODE(SEMI_AUTOMATIC);
+
 // setup() runs once, when the device is first turned on.
 void setup() {
   randomSeed(analogRead(0));
