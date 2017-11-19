@@ -12,9 +12,8 @@
 #define PIXEL_TYPE NSFastLED::NEOPIXEL
 #define HUE_STEP 10 // 1..255, each loop increments hue by this value
 #define LOOP_DELAY 100 //ms
-#define HSV_BRIGHTNESS 10
+#define HSV_BRIGHTNESS 255
 #define HSV_SATURATION 255
-#define BASE_BRIGHTNESS 2 //0-255
 /* set this to match the number of patterns you flip
 between when holding the setup button */
 #define N_PATTERNS 5
@@ -37,6 +36,7 @@ between when holding the setup button */
 NSFastLED::CRGB leds[PIXEL_COUNT];
 uint8_t base_hue = 0;
 uint8_t pattern = 0;
+unsigned long gBrightness = 5;
 // this is ghetto debouncing, and will ignore input to the pattern button
 // for X cycles of LOOP_DELAY once triggered
 uint8_t ignore_button_cycles = 0;
@@ -44,16 +44,15 @@ uint8_t ignore_button_cycles = 0;
 NSFastLED::CFastLED* gLED; // global CFastLED object
 
 // make sure we disable wifi cause we dont need that shit!
-SYSTEM_MODE(MANUAL);
+SYSTEM_MODE(SEMI_AUTOMATIC);
 
 // setup() runs once, when the device is first turned on.
 void setup() {
   Serial.println("Booting up");
   randomSeed(analogRead(0));
-  WiFi.disconnect();
   gLED = new NSFastLED::CFastLED();
   gLED->addLeds<PIXEL_TYPE, PIXEL_PIN>(leds, PIXEL_COUNT);
-  gLED->setBrightness(BASE_BRIGHTNESS);
+  gLED->setBrightness(gBrightness);
 
   RGB.control(true); // take over the LED
   RGB.color(DISORIENT_PINK_R, DISORIENT_PINK_G, DISORIENT_PINK_B);
@@ -192,8 +191,10 @@ void loop() {
     pattern_disorient_2();
   }
 
+  gLED->setBrightness(gBrightness);
   gLED->show();
-  // TODO(gabe) this doesnt work apparently?
-  gLED->delay(LOOP_DELAY);
+  // TODO(gabe) this doesnt work apparently? Contraray to documentation,
+  // FastLED::delay() doesnt perform any delay...
+  //gLED->delay(LOOP_DELAY);
   delay(LOOP_DELAY);
 }
