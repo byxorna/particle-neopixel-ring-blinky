@@ -11,7 +11,7 @@
 #define PIXEL_PIN 6
 #define PIXEL_TYPE NSFastLED::NEOPIXEL
 #define HUE_STEP 10 // 1..255, each loop increments hue by this value
-#define LOOP_DELAY 50 //ms
+#define LOOP_DELAY 100 //ms
 #define HSV_BRIGHTNESS 255
 #define HSV_SATURATION 255
 /* set this to match the number of patterns you flip
@@ -124,8 +124,7 @@ void pattern_hsv_offset_circle_loop(){
 
 // rainbow pulsing with varied breathing cycles
 void pattern_phase_rainbow_pulse() {
-  uint8_t bpm = NSFastLED::beatsin8(6, 6, 160); // on a period of 10s, cycle bpm between 6-200
-  uint8_t cBrightness = NSFastLED::beatsin8(bpm, 0, 255);
+  uint8_t cBrightness = NSFastLED::beatsin8(128, 0, 255);
   NSFastLED::CHSV hsv = NSFastLED::CHSV(base_hue, HSV_SATURATION, cBrightness);
   NSFastLED::CRGB rgb;
   NSFastLED::hsv2rgb_rainbow(hsv, rgb);
