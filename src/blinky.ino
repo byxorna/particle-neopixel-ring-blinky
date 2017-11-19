@@ -16,7 +16,7 @@
 #define HSV_SATURATION 255
 /* set this to match the number of patterns you flip
 between when holding the setup button */
-#define N_PATTERNS 5
+#define N_PATTERNS 6
 #define SETUP_BUTTON_HOLD_DURATION 800 // ms
 
 // PORNJ!!!! These values are selected to look decent on RBG LEDs
@@ -42,6 +42,12 @@ unsigned long gBrightness = 5;
 uint8_t ignore_button_cycles = 0;
 
 NSFastLED::CFastLED* gLED; // global CFastLED object
+
+// for palette support
+uint8_t gAnimIndex = 0;
+uint8_t gPalette = 0;
+NSFastLED::CRGBPalette16 currentPalette = NSFastLED::RainbowColors_p;
+NSFastLED::TBlendType currentBlending = NSFastLED::LINEARBLEND;
 
 // make sure we disable wifi cause we dont need that shit!
 SYSTEM_MODE(SEMI_AUTOMATIC);
@@ -122,6 +128,15 @@ void pattern_hsv_offset_circle_loop(){
   base_hue += HUE_STEP;
 }
 
+// cycle thru color palettes
+void pattern_color_palettes() {
+  for( int i = 0; i < PIXEL_COUNT; ++i) {
+    uint8_t pIndex = (i + 6*i*PIXEL_COUNT/PIXEL_COUNT + gAnimIndex)%256;
+    leds[i] = NSFastLED::ColorFromPalette(currentPalette, pIndex, 255, currentBlending);
+  }
+  gAnimIndex = (gAnimIndex+3)%256;
+}
+
 // rainbow pulsing with varied breathing cycles
 void pattern_phase_rainbow_pulse() {
   uint8_t cBrightness = NSFastLED::beatsin8(128, 0, 255);
@@ -152,7 +167,7 @@ void pattern_hsv_circle_loop(){
 // pattern 4
 void pattern_disorient_2(){
   // same as pattern 0, but in quadrants
-  uint8_t offset_0, offset_1, offset_2, offset_3, offset_4;
+  uint8_t offset_0, offset_1, offset_2, offset_3;
   offset_0 = 0;
   offset_1 = PIXEL_COUNT/4;
   offset_2 = PIXEL_COUNT/2;
@@ -203,6 +218,8 @@ void loop() {
     pattern_disorient_2();
   } else if (pattern == 4) {
     pattern_phase_rainbow_pulse();
+  } else if (pattern == 5) {
+    pattern_color_palettes();
   }
 
   gLED->setBrightness(gBrightness);
