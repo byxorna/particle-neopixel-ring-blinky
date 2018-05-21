@@ -32,7 +32,7 @@ between when holding the setup button */
 NSFastLED::CRGB leds[PIXEL_COUNT];
 uint8_t base_hue = 0;
 uint8_t pattern = 0;
-unsigned long gBrightness = 5;
+unsigned long gBrightness = 17;
 // this is ghetto debouncing, and will ignore input to the pattern button
 // for X cycles of LOOP_DELAY_MS once triggered
 uint8_t ignore_button_cycles = 0;
