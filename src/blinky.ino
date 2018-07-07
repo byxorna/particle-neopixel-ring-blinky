@@ -12,8 +12,6 @@
 #define PIXEL_TYPE NSFastLED::NEOPIXEL
 #define HUE_STEP 2 // 1..255, each loop increments hue by this value
 #define LOOP_DELAY_MS 50 //ms
-#define HSV_BRIGHTNESS 255
-#define HSV_SATURATION 255
 /* set this to match the number of patterns you flip
 between when holding the setup button */
 #define N_PATTERNS 3
@@ -32,7 +30,7 @@ between when holding the setup button */
 NSFastLED::CRGB leds[PIXEL_COUNT];
 uint8_t base_hue = 0;
 uint8_t pattern = 0;
-unsigned long gBrightness = 17;
+unsigned long gBrightness = 10;
 // this is ghetto debouncing, and will ignore input to the pattern button
 // for X cycles of LOOP_DELAY_MS once triggered
 uint8_t ignore_button_cycles = 0;
@@ -104,7 +102,7 @@ void pattern_hsv_offset_circle_loop(){
   NSFastLED::CHSV hsv;
   for (int i = 0 ; i < PIXEL_COUNT ; ++i){
     offset = ((float)i/(PIXEL_COUNT-1))*255;
-    hsv = NSFastLED::CHSV(base_hue+offset, HSV_SATURATION, HSV_BRIGHTNESS);
+    hsv = NSFastLED::CHSV(base_hue+offset, 255, 255);
     NSFastLED::hsv2rgb_rainbow(hsv, rgb);
     //if (random(PIXEL_COUNT*2) == 0) {
     //  leds[i] = NSFastLED::CRGB::White;
@@ -114,7 +112,7 @@ void pattern_hsv_offset_circle_loop(){
   }
 
   // set the center pixel to mirror what pixel 0 is
-  hsv = NSFastLED::CHSV(base_hue+offset, HSV_SATURATION, HSV_BRIGHTNESS);
+  hsv = NSFastLED::CHSV(base_hue+offset, 255, 255);
   hsv2rgb_rainbow(hsv, rgb);
   RGB.color(rgb.r, rgb.g, rgb.b);
 
@@ -146,7 +144,7 @@ void pattern_color_palettes_with_sparkle() {
 // rainbow pulsing with varied breathing cycles
 void pattern_phase_rainbow_pulse() {
   uint8_t cBrightness = NSFastLED::beatsin8(128, 0, 255);
-  NSFastLED::CHSV hsv = NSFastLED::CHSV(base_hue, HSV_SATURATION, cBrightness);
+  NSFastLED::CHSV hsv = NSFastLED::CHSV(base_hue, 255, cBrightness);
   NSFastLED::CRGB rgb;
   NSFastLED::hsv2rgb_rainbow(hsv, rgb);
   for (int i = 0 ; i < PIXEL_COUNT ; ++i){
@@ -159,7 +157,7 @@ void pattern_phase_rainbow_pulse() {
 
 // pattern 3
 void pattern_hsv_circle_loop(){
-  NSFastLED::CHSV hsv = NSFastLED::CHSV(base_hue, HSV_SATURATION, HSV_BRIGHTNESS);
+  NSFastLED::CHSV hsv = NSFastLED::CHSV(base_hue, 255, 255);
   NSFastLED::CRGB rgb;
   NSFastLED::hsv2rgb_rainbow(hsv, rgb);
   for (int i = 0 ; i < PIXEL_COUNT ; ++i){
