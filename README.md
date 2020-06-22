@@ -1,6 +1,12 @@
 # particle-neopixel-ring-blinky
 arduino code for adafruit neopixel ring blinky
 
+
+Working as of 2020.06.22:
+```
+make flash PROJECT=perlin-noise-ring
+```
+
 ## Setup
 
 ```
