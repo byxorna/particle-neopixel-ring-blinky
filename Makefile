@@ -1,5 +1,6 @@
 .DEFAULT_GOAL := build
 FIRMWARE = firmware.bin
+# NOOTE: newer targets do not seem to work well, because of some bullshit looking for WIFI
 TARGET = 0.6.3
 FASTLED_VERSION ?= 3.1.5
 PROJECT ?= blinky

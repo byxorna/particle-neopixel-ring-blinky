@@ -20,15 +20,15 @@ float xOffsets[NUM_LEDS];
 float yOffsets[NUM_LEDS];
 
 const int speedH = 4;   //Hue value is 16-bit
-const int scaleH = 3;
+const int scaleH = 50; // 50
 const int speedS = 7;
 const int scaleS = 30;
 const int speedV = 10;
-const int scaleV = 3;
+const int scaleV = 50; // 50
 
 float colorStart = 0;
 float colorRange = .7;  //Range of each section of color 1 = 100%
-float colorSpeed = .01;    //Speed of color cycling
+float colorSpeed = .1;    //Speed of color cycling (def: .1)
 const int colorMax = 255;
 
 String mode = "none"; // options 1: normal, 2: complementary, 3: triad
