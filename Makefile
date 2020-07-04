@@ -1,7 +1,8 @@
 .DEFAULT_GOAL := build
 FIRMWARE = firmware.bin
 # NOOTE: newer targets do not seem to work well, because of some bullshit looking for WIFI
-TARGET = 0.6.3
+TARGET ?= 0.6.3
+DEVICE ?= photon
 FASTLED_VERSION ?= 3.1.5
 PROJECT ?= blinky
 
@@ -11,12 +12,12 @@ deps:
 
 .PHONY: $(FIRMWARE)
 $(FIRMWARE):
-	particle cloud compile photon project.properties src/particle/$(PROJECT) --target $(TARGET) --saveTo $(FIRMWARE)
+	particle cloud compile $(DEVICE) project.properties src/particle/$(PROJECT) --target $(TARGET) --saveTo $(FIRMWARE)
 
 #.PHONY: $(FIRMWARE)
 #$(FIRMWARE):
-#	particle compile photon src/particle/$(PROJECT) lib/FastLED-$(FASTLED_VERSION) --target $(TARGET) --saveTo $(FIRMWARE)
-##	particle compile photon src/particle/$(PROJECT) lib/FastLED-$(FASTLED_VERSION) --target $(TARGET) --saveTo $(FIRMWARE)
+#	particle compile $(DEVICE) src/particle/$(PROJECT) lib/FastLED-$(FASTLED_VERSION) --target $(TARGET) --saveTo $(FIRMWARE)
+##	particle compile $(DEVICE) src/particle/$(PROJECT) lib/FastLED-$(FASTLED_VERSION) --target $(TARGET) --saveTo $(FIRMWARE)
 
 .PHONY: build
 build: $(FIRMWARE)
