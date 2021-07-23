@@ -37,8 +37,11 @@ typedef void (*FP)(NSFastLED::CRGB*, DeckSettings*);
 /* set this to match the number of patterns you flip
 between when holding the setup button */
 #define N_PATTERNS 3
-#define SETUP_BUTTON_HOLD_DURATION_MS 800
+#define SETUP_BUTTON_HOLD_DURATION_MS 600
 #define MAX_BRIGHTNESS 255
+#define BRIGHTNESS_OFF 0
+#define BRIGHTNESS_LO 25
+#define BRIGHTNESS_HI 200
 
 #define BOOTUP_ANIM_DURATION_MS 6000
 #define PATTERN_CHANGE_INTERVAL_MS 30000
@@ -443,10 +446,10 @@ const FP patternBank[] = {
   &pattern_phase_shift_palette,
   &pattern_plasma,
   &pattern_from_palette,
-  &pattern_disorient_palette_sparkles,
-  &pattern_slow_pulse_with_sparkles,
+  //&pattern_disorient_palette_sparkles,
+  //&pattern_slow_pulse_with_sparkles,
   &pattern_palette_waves,
-  &pattern_rainbow_waves_with_sparkles,
+  //&pattern_rainbow_waves_with_sparkles,
 };
 
 void randomPattern(DeckSettings* deck, DeckSettings* otherDeck) {
@@ -548,14 +551,21 @@ void loop() {
   }
 
   if (button_state == 2) {
-    /*
-    BRIGHTNESS_INDEX++;
     button_state = 3;
-    if (BRIGHTNESS_INDEX >= BRIGHTNESS_COUNT){
-      BRIGHTNESS_INDEX = 0;
+    switch (GLOBAL_BRIGHTNESS) {
+    case BRIGHTNESS_HI:
+      GLOBAL_BRIGHTNESS = BRIGHTNESS_OFF;
+      break;
+    case BRIGHTNESS_LO:
+      GLOBAL_BRIGHTNESS = BRIGHTNESS_HI;
+      break;
+    case BRIGHTNESS_OFF:
+      GLOBAL_BRIGHTNESS = BRIGHTNESS_LO;
+      break;
+    default:
+      GLOBAL_BRIGHTNESS = BRIGHTNESS_LO;
+      break;
     }
-    Serial.printlnf("set brightness to %d/255", GLOBAL_BRIGHTNESS);
-    */
   }
 
 
