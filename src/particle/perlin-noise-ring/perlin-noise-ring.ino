@@ -20,7 +20,7 @@ unsigned long t_now;
 //define LED_PIN D6
 #define LED_PIN 6
 #define NUM_LEDS 24
-int BRIGHTNESS = 96;
+int BRIGHTNESS = BRIGHTNESS_MED;
 #define LED_TYPE WS2812B
 #define COLOR_ORDER GRB
 
@@ -29,11 +29,11 @@ const float angle = 2 * PI / ((float)NUM_LEDS);
 float xOffsets[NUM_LEDS];
 float yOffsets[NUM_LEDS];
 
-const int speedH = 1;   //Hue value is 16-bit
+const int speedH = 2;   //Hue value is 16-bit
 const int scaleH = 10; // 50
 const int speedS = 3;
 const int scaleS = 15;
-const int speedV = 10;
+const int speedV = 1;
 const int scaleV = 50; // 50
 
 float colorStart = 0;
@@ -41,7 +41,7 @@ float colorRange = .1;  //Range of each section of color 1 = 100%
 float colorSpeed = .05;    //Speed of color cycling (def: .1)
 const int colorMax = 255;
 
-String mode = "COMPLEMENTARY"; // options 1: normal, 2: complementary, 3: triad
+String mode = "TRIAD"; // options 1: normal, 2: complementary, 3: triad
 
 // The leds
 CRGB leds[NUM_LEDS];
