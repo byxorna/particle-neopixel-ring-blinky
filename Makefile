@@ -1,7 +1,11 @@
 .DEFAULT_GOAL := build
 FIRMWARE = firmware.bin
 # NOOTE: newer targets do not seem to work well, because of some bullshit looking for WIFI
-TARGET ?= 0.6.3
+# tested working 2021.07.22
+# - 1.0.0, 1.5.2 perlin-noise-ring, works fine
+# - 3.1.0 didnt work, came up green LED, no patterns :(
+# - 2.1.0 also does not work
+TARGET ?= 1.5.2
 DEVICE ?= photon
 FASTLED_VERSION ?= 3.1.5
 PROJECT ?= blinky

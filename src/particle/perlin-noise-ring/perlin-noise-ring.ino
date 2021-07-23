@@ -56,6 +56,9 @@ void setup()
   LEDS.addLeds<LED_TYPE,LED_PIN,COLOR_ORDER>(leds,NUM_LEDS);
   LEDS.setBrightness(BRIGHTNESS);
 
+  ::RGB.control(true);
+  ::RGB.color(50, 0, 0);
+
   x = 0.0;
   y = 0.0;
   zH = 100;
@@ -174,5 +177,9 @@ void loop()
   fillnoise();
 
   LEDS.show();
+  // set the center pixel to mirror what pixel 0 is
+  if (true) {
+    ::RGB.color(0,0,0);
+  }
   delay(20);
 }
